@@ -1,5 +1,20 @@
 # Lista zmian
 
+## 2.4.1
+
+### Poprawki błędów
+- **Wycofano obfuskację garble wprowadzoną w 2.4.0.** Powód: w praktyce, na realnym
+  wydaniu, Google Chrome (Safe Browsing) blokował pobieranie `NetworkMaster-windows-amd64.exe`
+  jako "wirus" – nie tylko Windows Defender na maszynie deweloperskiej (to już wiedzieliśmy),
+  ale też przeglądarka blokująca pobranie dla zwykłych użytkowników, czyniąc plik praktycznie
+  niepobieralnym. `build.ps1` wrócił do zwykłego `go build` (bez obfuskacji) – pliki są
+  znowu ~8 MB, bez zaciemniania nazw/stałych tekstowych. **Jedyny trwały sposób na ochronę
+  przed dekompilacją bez tego efektu to podpisanie binarek certyfikatem Authenticode** –
+  kosztowe (~100-400$/rok) i wymaga weryfikacji tożsamości/firmy u wystawcy, ale buduje
+  realną reputację w SmartScreen/Safe Browsing. Nie wdrożone w tej wersji.
+- Wydanie v2.4.0 na GitHubie zostało usunięte i zastąpione przez v2.4.1 z czystymi
+  (nie-garble) binarkami – ten sam powód.
+
 ## 2.4.0
 
 **To jest pierwsze publiczne wydanie** – opublikowane jako GitHub Release
@@ -15,16 +30,12 @@ razem ze stroną WWW ([networkmaster-x.github.io/networkmaster-site](https://net
 - **Komunikaty od twórcy** – program ściąga `announcements.json` z publicznego repo przy
   starcie; każdy nieprzeczytany komunikat wymaga potwierdzenia Enterem, historia
   potwierdzeń jest dostępna z menu Ustawień (`US` → `5`).
-- **Ochrona przed dekompilacją: `build.ps1` teraz domyślnie buduje przez
-  [`garble`](https://github.com/burntsushi/garble)** (zaciemnianie nazw identyfikatorów i
-  stałych tekstowych, flaga `-literals`) – potwierdzone bezpośrednim testem: nazwy funkcji
-  takie jak `systemVPNSecrets`/`rasDialParams`, widoczne jawnie w zwykłej binarce, nie
-  występują w ogóle w binarce zbudowanej przez garble. **Realny koszt:** pliki są ok. 3×
-  większe (25 MB zamiast ~8 MB) i garble może wyzwolić fałszywy alarm antywirusa (Windows
-  Defender oznaczył zarówno wynikowy plik, jak i samo narzędzie garble, jako wirus/PUA na
-  etapie budowania na maszynie deweloperskiej) – świadomie zaakceptowane, podobnie jak
-  wcześniejsze ostrzeżenia Defendera przy odczycie zapamiętanych haseł VPN. Budowanie bez
-  garble: `build.ps1 -SkipGarble`.
+- ~~**Ochrona przed dekompilacją: `build.ps1` teraz domyślnie buduje przez garble**~~ –
+  **WYCOFANE w 2.4.1** (patrz wyżej) – na realnym wydaniu Chrome blokował pobieranie jako
+  "wirus". W momencie wprowadzenia potwierdzone testem, że nazwy funkcji takie jak
+  `systemVPNSecrets`/`rasDialParams`, widoczne jawnie w zwykłej binarce, nie występowały w
+  ogóle w binarce zbudowanej przez garble – ale koszt (fałszywe alarmy u użytkowników)
+  okazał się zbyt wysoki w praktyce, nie tylko w teorii.
 - **Repozytorium zmieniło nazwę z `update` na `networkmaster`** (GitHub:
   `NetworkMaster-x/networkmaster`) – program sam o tym wie (`UpdateRepo`/`RepoURL` w
   `version.go`). Struktura: `networkmaster` (publiczne – wydania, dokumentacja, Licencja,
