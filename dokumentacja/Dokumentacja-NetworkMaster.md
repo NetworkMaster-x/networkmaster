@@ -189,7 +189,15 @@ Poniższe punkty są świadomie i w pełni ujawnione — żadne z nich nie jest 
    profili typu IKEv2 — to również ograniczenie samego narzędzia Apple.
 3. **Linux: VPN systemowy wymaga opcjonalnych wtyczek** `NetworkManager-l2tp` /
    `NetworkManager-pptp`, które nie zawsze są domyślnie zainstalowane — program zgłasza ich brak
-   wprost zamiast cicho zawodzić. IKEv2 i SSTP nie mają natywnego wsparcia na Linuksie.
+   wprost zamiast cicho zawodzić. Domyślnie NetworkManager "z pudełka" nie umie tworzyć połączeń
+   VPN typu L2TP/PPTP — potrzebuje do tego dodatkowego modułu. Instalacja (nazwy pakietów różnią
+   się między dystrybucjami):
+   - Ubuntu/Debian: `sudo apt install network-manager-l2tp network-manager-pptp`
+   - Fedora: `sudo dnf install NetworkManager-l2tp NetworkManager-pptp`
+   - Arch Linux: `networkmanager-l2tp` / `networkmanager-pptp` (AUR)
+
+   IKEv2 i SSTP nie mają natywnego wsparcia na Linuksie (żadna wtyczka tego nie zmieni) — do nich
+   użyj WireGuard lub OpenVPN.
 4. **32-bit Windows (`windows-386`): odzyskiwanie zapamiętanych haseł/PSK VPN do backupu
    prawdopodobnie nie zadziała.** Struktura danych używana przez Windows API do tego celu
    (`RASDIALPARAMSW`) została zweryfikowana i przetestowana tylko dla 64-bit Windows. Funkcja nie
