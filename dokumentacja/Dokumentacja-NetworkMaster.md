@@ -1,9 +1,10 @@
 # NetworkMaster — dokumentacja programu
 
-**Wersja:** 2.4.0
+**Wersja:** 2.4.x — dokładny numer i pełna historia zmian: [`CHANGELOG.md`](../CHANGELOG.md)
 **Rodzaj:** terminalowe narzędzie do diagnostyki i zarządzania siecią lokalną
 **Platformy:** Windows, Linux, macOS (amd64, arm64; Windows i Linux dodatkowo 386/32-bit)
 **Model dystrybucji:** pojedynczy plik wykonywalny, bez instalatora, bez zależności zewnętrznych, portable (dane zapisywane obok pliku programu)
+**Status prawny:** oprogramowanie zamknięte, wszelkie prawa zastrzeżone — patrz [`../LICENSE.md`](../LICENSE.md) i [`Regulamin.md`](Regulamin.md)
 
 Ten dokument opisuje program taki, jaki jest — funkcje, sposób działania, architekturę kodu i
 znane ograniczenia — z myślą zarówno o użytkowniku końcowym, jak i o kimś oceniającym produkt
@@ -100,9 +101,14 @@ którego zwykły, niezależny program terminalowy nie może uzyskać.
 ### Pozostałe
 | Skrót | Funkcja |
 |---|---|
-| `UP` | Aktualizacje — sprawdzenie/instalacja nowej wersji z GitHub Releases |
-| `US` | Ustawienia i informacje o programie |
+| `UP` | Aktualizacje — sprawdzenie/instalacja nowej wersji z GitHub Releases. Wydania oznaczone jako krytyczne/obowiązkowe nie dają się trwale pominąć (patrz §7) |
+| `US` | Ustawienia i informacje o programie, w tym historia przeczytanych komunikatów od twórcy (`5`) |
 | `ADM` | (tylko Windows, gdy brak uprawnień) ponowne uruchomienie jako Administrator |
+
+Dodatkowo: program przy starcie sam sprawdza, czy twórca opublikował **komunikat** (np.
+ogłoszenie, ostrzeżenie) — każdy nieprzeczytany wymaga potwierdzenia Enterem, zanim program
+przejdzie do menu głównego. Historia potwierdzonych komunikatów jest zawsze dostępna z menu
+Ustawień.
 
 ## 3. Skróty klawiszowe
 
@@ -150,7 +156,7 @@ biblioteki standardowej.
 
 ```powershell
 cd source_code
-.\build.ps1 -Version 2.4.0
+.\build.ps1 -Version X.Y.Z
 ```
 
 Skrypt uruchamia testy (`go vet` + `go test`), a następnie buduje wszystkie 8 wariantów do
@@ -188,6 +194,19 @@ a nie osobnymi gałęziami kodu.
 - **Baza producentów MAC** — osadzona bezpośrednio w binarce (skompresowana baza IEEE, ok. 39,7
   tys. wpisów), z zapytaniem do zewnętrznego serwisu jako uzupełnienie tylko wtedy, gdy adres nie
   znajduje się lokalnie.
+- **Komunikaty od twórcy** — program ściąga `announcements.json` z publicznego repo przy
+  starcie (ten sam mechanizm "GitHub jako lekka baza danych" co system aktualizacji); lokalna
+  historia potwierdzeń w `core_data/announcements_seen.json`.
+
+### Jakość kodu i testy
+
+Cały program to ok. 13 200 linii Go w jednej bazie kodu. Automatyczny pakiet testów (`go test`)
+obejmuje 91 testów w 7 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
+językach systemowych), kalkulator podsieci, system aktualizacji (na atrapie API GitHuba: wybór
+pliku per platforma/architektura, weryfikacja SHA-256, odrzucanie podmienionych plików, podmiana
+z wycofaniem), system komunikatów od twórcy, oraz weryfikację układu struktur Win32 API (RAS,
+Menedżer Poświadczeń) na poziomie bajtów. `go vet` przechodzi czysto na wszystkich 8 kombinacjach
+system/architektura przy każdym wydaniu (wymusza to `build.ps1`).
 
 ## 7. Znane ograniczenia
 
@@ -224,6 +243,14 @@ Poniższe punkty są świadomie i w pełni ujawnione — żadne z nich nie jest 
    zawierał wszystko potrzebne do pełnego odtworzenia konfiguracji, łącznie z hasłami, kluczami
    PSK i kluczami prywatnymi WireGuard. Oznacza to, że plik backupu wymaga takiej samej ostrożności
    jak plik z hasłami — nie należy go przesyłać ani przechowywać bez dodatkowego zabezpieczenia.
+6. **Binarki nie są podpisane cyfrowo (brak certyfikatu Authenticode/Apple Developer ID).**
+   System operacyjny lub antywirus może przy pierwszym uruchomieniu/pobraniu pokazać ostrzeżenie
+   ("nieznany wydawca", SmartScreen, Gatekeeper na macOS — patrz §4) — to standardowe zachowanie
+   dla każdego niepodpisanego pliku wykonywalnego, nie oznaka realnego zagrożenia. Próba
+   obfuskacji kodu (garble) w wersji 2.4.0 została wycofana w 2.4.1, bo w praktyce powodowała
+   dużo gorszy efekt: Google Chrome (Safe Browsing) blokował pobieranie pliku jako "wirus" —
+   patrz CHANGELOG.md. Jedyny trwały sposób pozbycia się tych ostrzeżeń to podpis cyfrowy, nie
+   wdrożony w tej wersji.
 
 ## 8. FAQ
 
@@ -246,6 +273,12 @@ funkcje z natury sieciowe zewnętrznie (WHOIS, GeoIP, aktualizacje, test prędko
 **Czy program instaluje coś w systemie?**
 Nie. To pojedynczy plik wykonywalny bez instalatora; jedyne pliki, jakie tworzy, to własne
 foldery danych (`core_data/`, `Reports/`) obok siebie.
+
+**Dlaczego Windows/Chrome/antywirus ostrzega przy pobraniu albo uruchomieniu?**
+Bo plik nie jest podpisany cyfrowo (patrz punkt 6 w §7) — to standardowe zachowanie systemu dla
+każdego niepodpisanego programu, niezależnie od tego, co kod faktycznie robi. Jedyny sposób,
+żeby to ostrzeżenie zniknęło na dobre, to podpis cyfrowy (certyfikat Authenticode) — nie
+wdrożony w tej wersji (patrz CHANGELOG.md).
 
 ---
 

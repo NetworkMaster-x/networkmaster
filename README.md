@@ -22,6 +22,8 @@ Pobierz plik odpowiadający Twojemu systemowi i uruchom go w terminalu — nie w
 * **Monitorowanie:** dashboard w czasie rzeczywistym, pasmo, WiFi, połączenia z nazwami procesów.
 * **Aktualizacje:** program sam sprawdza nowe wersje (w tym repozytorium), pokazuje listę zmian
   i pyta o zgodę — z wyjątkiem aktualizacji oznaczonych jako krytyczne/obowiązkowe.
+* **Komunikaty od twórcy:** program może pokazać ogłoszenie przy starcie (wymaga potwierdzenia),
+  z lokalną historią potwierdzeń dostępną z menu Ustawień.
 * **Przenośny:** jeden plik, dane zapisywane obok programu.
 * **Skróty:** `Ctrl+C` – wstecz o jedno okno, `Ctrl+X` – zamknięcie programu (działają w każdym oknie).
 
