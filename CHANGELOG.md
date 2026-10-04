@@ -2,6 +2,35 @@
 
 ## 2.4.0
 
+**To jest pierwsze publiczne wydanie** – opublikowane jako GitHub Release
+([NetworkMaster-x/networkmaster](https://github.com/NetworkMaster-x/networkmaster/releases/tag/v2.4.0)),
+razem ze stroną WWW ([networkmaster-x.github.io/networkmaster-site](https://networkmaster-x.github.io/networkmaster-site/)).
+
+### Bezpieczeństwo i dystrybucja
+- **Ekran zgody przy pierwszym uruchomieniu** – program wymaga teraz wpisania `TAK`/`T`,
+  jasno informując o Licencji, Regulaminie i Polityce Prywatności (link `LegalURL`).
+- **Krytyczne (obowiązkowe) aktualizacje** – wydanie z tytułem zaczynającym się od
+  `[KRYTYCZNA]`/`[CRITICAL]` nie może zostać trwale pominięte (opcja „Pomiń tę wersję”
+  jest wtedy zablokowana); banner w menu głównym staje się czerwony i bardziej naglący.
+- **Komunikaty od twórcy** – program ściąga `announcements.json` z publicznego repo przy
+  starcie; każdy nieprzeczytany komunikat wymaga potwierdzenia Enterem, historia
+  potwierdzeń jest dostępna z menu Ustawień (`US` → `5`).
+- **Ochrona przed dekompilacją: `build.ps1` teraz domyślnie buduje przez
+  [`garble`](https://github.com/burntsushi/garble)** (zaciemnianie nazw identyfikatorów i
+  stałych tekstowych, flaga `-literals`) – potwierdzone bezpośrednim testem: nazwy funkcji
+  takie jak `systemVPNSecrets`/`rasDialParams`, widoczne jawnie w zwykłej binarce, nie
+  występują w ogóle w binarce zbudowanej przez garble. **Realny koszt:** pliki są ok. 3×
+  większe (25 MB zamiast ~8 MB) i garble może wyzwolić fałszywy alarm antywirusa (Windows
+  Defender oznaczył zarówno wynikowy plik, jak i samo narzędzie garble, jako wirus/PUA na
+  etapie budowania na maszynie deweloperskiej) – świadomie zaakceptowane, podobnie jak
+  wcześniejsze ostrzeżenia Defendera przy odczycie zapamiętanych haseł VPN. Budowanie bez
+  garble: `build.ps1 -SkipGarble`.
+- **Repozytorium zmieniło nazwę z `update` na `networkmaster`** (GitHub:
+  `NetworkMaster-x/networkmaster`) – program sam o tym wie (`UpdateRepo`/`RepoURL` w
+  `version.go`). Struktura: `networkmaster` (publiczne – wydania, dokumentacja, Licencja,
+  Regulamin, Polityka Prywatności), `networkmaster-core` (prywatne – kod źródłowy),
+  `networkmaster-site` (publiczne – strona WWW, w przygotowaniu).
+
 ### Nowości
 - **Wbudowany VPN systemu teraz działa na wszystkich trzech platformach, nie tylko na
   Windows** – dodawanie/usuwanie/edycja/połączenie/rozłączenie/backup/przywracanie z tym
