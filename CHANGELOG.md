@@ -1,5 +1,11 @@
 # Lista zmian
 
+## 2.4.2
+
+Wydanie testowe – wyłącznie zmiana numeru wersji, oznaczone jako **krytyczne**, żeby
+sprawdzić w praktyce mechanizm obowiązkowych aktualizacji (banner, brak opcji „Pomiń tę
+wersję”, wymuszone `T`/`N`). Brak zmian w kodzie ani funkcjach.
+
 ## 2.4.1
 
 ### Poprawki błędów
