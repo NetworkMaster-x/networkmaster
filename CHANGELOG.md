@@ -19,7 +19,7 @@
 
 **To jest pierwsze publiczne wydanie** – opublikowane jako GitHub Release
 ([NetworkMaster-x/networkmaster](https://github.com/NetworkMaster-x/networkmaster/releases/tag/v2.4.0)),
-razem ze stroną WWW ([networkmaster-x.github.io/networkmaster-site](https://networkmaster-x.github.io/networkmaster-site/)).
+razem ze stroną WWW ([networkmaster-x.github.io](https://networkmaster-x.github.io/)).
 
 ### Bezpieczeństwo i dystrybucja
 - **Ekran zgody przy pierwszym uruchomieniu** – program wymaga teraz wpisania `TAK`/`T`,
@@ -40,7 +40,9 @@ razem ze stroną WWW ([networkmaster-x.github.io/networkmaster-site](https://net
   `NetworkMaster-x/networkmaster`) – program sam o tym wie (`UpdateRepo`/`RepoURL` w
   `version.go`). Struktura: `networkmaster` (publiczne – wydania, dokumentacja, Licencja,
   Regulamin, Polityka Prywatności), `networkmaster-core` (prywatne – kod źródłowy),
-  `networkmaster-site` (publiczne – strona WWW, w przygotowaniu).
+  `networkmaster-x.github.io` (publiczne – strona WWW; ta konkretna nazwa repo to wymóg
+  GitHub Pages, żeby serwować stronę pod krótkim adresem bez dodatkowego segmentu w URL –
+  repo nazwane inaczej dostałoby adres `networkmaster-x.github.io/<nazwa-repo>/`).
 
 ### Nowości
 - **Wbudowany VPN systemu teraz działa na wszystkich trzech platformach, nie tylko na
