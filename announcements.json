@@ -1,9 +1,9 @@
 [
   {
     "id": "2026-10-welcome",
-    "date": "2026-10-02",
-    "title": "Witaj w NetworkMaster 2.4.0",
+    "date": "2026-10-04",
+    "title": "Witaj w NetworkMaster 2.4.1",
     "critical": false,
-    "body": "Dziekujemy za korzystanie z programu. Ta wersja wprowadza pelna obsluge VPN systemowego na Windows, Linuksie i macOS, oraz wersje 32-bit dla Windows i Linuksa."
+    "body": "Dziekujemy za korzystanie z programu. Wersja 2.4.1 wprowadza pelna obsluge VPN systemowego na Windows, Linuksie i macOS, oraz wersje 32-bit dla Windows i Linuksa."
   }
 ]
