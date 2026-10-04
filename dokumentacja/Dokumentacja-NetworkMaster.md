@@ -122,6 +122,21 @@ procesora i uruchomić go w terminalu:
 
 (macOS nie ma wariantu 386 — Apple porzuciło 32-bit x86 w 2017 r., a 32-bit w ogóle w 2019 r.)
 
+**Linux i macOS:** pobrany plik nie ma domyślnie uprawnienia do uruchamiania — trzeba je
+nadać przed pierwszym startem:
+```
+chmod +x NetworkMaster-linux-amd64        # (albo nazwa pliku, który pobrałeś)
+./NetworkMaster-linux-amd64
+```
+
+**macOS dodatkowo** zablokuje uruchomienie niepodpisanego pliku komunikatem "nie można
+otworzyć, bo pochodzi od niezidentyfikowanego dewelopera" (Gatekeeper) — trzeba jednorazowo
+zdjąć flagę kwarantanny:
+```
+xattr -d com.apple.quarantine NetworkMaster-macos-amd64
+```
+albo kliknąć plik prawym przyciskiem → Otwórz, i potwierdzić w oknie systemowym.
+
 Przy pierwszym uruchomieniu program prosi o potwierdzenie i tworzy obok siebie foldery
 `core_data/` (dane własne) i `Reports/` (raporty). Przeniesienie/skopiowanie folderu z plikiem
 programu przenosi też cały jego stan.
