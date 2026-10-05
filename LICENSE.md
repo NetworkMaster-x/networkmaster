@@ -1,6 +1,6 @@
 # Licencja NetworkMaster
 
-Copyright © 2026 [IMIĘ I NAZWISKO / NAZWA FIRMY WŁAŚCICIELA]. Wszelkie prawa zastrzeżone.
+Copyright © 2026 Paweł Mościbrodzki, NIP 5372682524. Wszelkie prawa zastrzeżone.
 
 **To oprogramowanie NIE jest oprogramowaniem open source.** Kod źródłowy i pliki wykonywalne
 NetworkMaster są udostępniane wyłącznie na warunkach opisanych poniżej oraz w

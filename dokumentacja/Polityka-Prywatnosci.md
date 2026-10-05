@@ -76,5 +76,4 @@ szczególności w związku ze zmianami w funkcjonalności Programu lub modelu je
 
 ## 7. Kontakt
 
-W sprawach dotyczących prywatności i danych: **pawelm286.97@gmail.com** (adres
-tymczasowy/placeholder — Właściciel może wskazać docelowy adres kontaktowy/firmowy).
+W sprawach dotyczących prywatności i danych: **pxware@pxware.pl**.

@@ -11,7 +11,7 @@ Wersja Regulaminu: 1.0 · Dotyczy programu: NetworkMaster (od wersji 2.4.0)
 
 - **Program** — oprogramowanie NetworkMaster, obejmujące pliki wykonywalne, kod źródłowy (jeśli
   udostępniony), dokumentację i wszelkie materiały towarzyszące.
-- **Właściciel** — **[IMIĘ I NAZWISKO / NAZWA FIRMY WŁAŚCICIELA]**, podmiot posiadający pełne
+- **Właściciel** — **Paweł Mościbrodzki, NIP 5372682524**, podmiot posiadający pełne
   prawa autorskie i majątkowe do Programu.
 - **Użytkownik** — każda osoba fizyczna lub prawna pobierająca, instalująca lub uruchamiająca
   Program.
@@ -85,5 +85,4 @@ zgodnie z obowiązującymi przepisami.
 
 ## 10. Kontakt
 
-W sprawach dotyczących Programu i niniejszego Regulaminu: **pawelm286.97@gmail.com** (adres
-tymczasowy/placeholder — Właściciel może wskazać docelowy adres kontaktowy/firmowy).
+W sprawach dotyczących Programu i niniejszego Regulaminu: **pxware@pxware.pl**.
