@@ -5,5 +5,12 @@
     "title": "Witaj w NetworkMaster 2.4.1",
     "critical": false,
     "body": "Dziekujemy za korzystanie z programu. Wersja 2.4.1 wprowadza pelna obsluge VPN systemowego na Windows, Linuksie i macOS, oraz wersje 32-bit dla Windows i Linuksa."
+  },
+  {
+    "id": "2026-10-ssh-ftp",
+    "date": "2026-10-06",
+    "title": "Nowosc w 2.5.0: klient SSH/SFTP/FTP",
+    "critical": false,
+    "body": "Program ma teraz wbudowany klient SSH/SFTP (sesja interaktywna, pojedyncza komenda, przegladarka plikow, logowanie haslem lub kluczem) oraz klient FTP. Szczegoly w dokumentacji i CHANGELOG.md."
   }
 ]
