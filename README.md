@@ -19,6 +19,9 @@ Pobierz plik odpowiadający Twojemu systemowi i uruchom go w terminalu — nie w
   tworzenie nowych profili na macOS nie jest technicznie możliwe spoza podpisanej aplikacji Apple),
   WireGuard i OpenVPN na wszystkich platformach – dodawanie, edycja, usuwanie, łączenie/rozłączanie,
   pełny backup i przywracanie (`.zip`).
+* **Zdalny dostęp:** klient SSH/SFTP (sesja interaktywna lub pojedyncza komenda, przeglądarka
+  plików, logowanie hasłem/kluczem, weryfikacja klucza hosta TOFU) i klient FTP (przeglądarka
+  plików) – zapisane profile hostów, tak samo jak VPN.
 * **Monitorowanie:** dashboard w czasie rzeczywistym, pasmo, WiFi, połączenia z nazwami procesów.
 * **Aktualizacje:** program sam sprawdza nowe wersje (w tym repozytorium), pokazuje listę zmian
   i pyta o zgodę — z wyjątkiem aktualizacji oznaczonych jako krytyczne/obowiązkowe.

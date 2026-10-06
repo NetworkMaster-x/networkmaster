@@ -98,6 +98,18 @@ którego zwykły, niezależny program terminalowy nie może uzyskać.
 | `O` | Monitor WiFi — siła sygnału na żywo |
 | `N` | Netstat — aktywne porty i połączenia wraz z nazwami procesów |
 
+### Zdalny dostęp
+| Skrót | Funkcja |
+|---|---|
+| `SSH` | Klient SSH/SFTP — zapisane hosty, sesja interaktywna (pełny zdalny terminal), wykonanie pojedynczej komendy, przeglądarka plików (SFTP) |
+| `FTP` | Klient FTP — zapisane hosty, przeglądarka plików (stary, nieszyfrowany protokół — patrz §7) |
+
+Profile SSH obsługują logowanie hasłem i/lub kluczem prywatnym (opcjonalnie zaszyfrowanym
+hasłem). Przy pierwszym połączeniu z danym hostem program pokazuje odcisk palca klucza
+serwera i prosi o potwierdzenie (TOFU — "zaufaj przy pierwszym połączeniu", ten sam
+mechanizm co `known_hosts` w OpenSSH) — zmiana klucza przy kolejnym połączeniu jest
+sygnalizowana wprost jako możliwy atak, nie cicho ignorowana.
+
 ### Pozostałe
 | Skrót | Funkcja |
 |---|---|
@@ -151,8 +163,11 @@ Przełączniki wiersza poleceń: `--version`, `--check-update`, `--help`.
 
 ## 5. Budowanie ze źródeł
 
-Wymagany [Go](https://go.dev/dl/) 1.22 lub nowszy. Program nie używa CGO ani zależności spoza
-biblioteki standardowej.
+Wymagany [Go](https://go.dev/dl/) 1.22 lub nowszy. Program nie używa CGO. Od wersji z
+klientem SSH/SFTP/FTP korzysta z trzech zależności Go (`golang.org/x/crypto`,
+`golang.org/x/term`, `github.com/pkg/sftp`) — potrzebny jest dostęp do internetu przy
+pierwszym budowaniu (pobranie modułów), zero zależności uruchomieniowych (jeden,
+samodzielny plik wykonywalny jak zawsze — moduły są wkompilowane statycznie).
 
 ```powershell
 cd source_code
@@ -197,15 +212,22 @@ a nie osobnymi gałęziami kodu.
 - **Komunikaty od twórcy** — program ściąga `announcements.json` z publicznego repo przy
   starcie (ten sam mechanizm "GitHub jako lekka baza danych" co system aktualizacji); lokalna
   historia potwierdzeń w `core_data/announcements_seen.json`.
+- **Klient SSH/SFTP/FTP** — SSH/SFTP przez `golang.org/x/crypto/ssh` i `github.com/pkg/sftp`
+  (jedyne zależności, których nie da się bezpiecznie napisać samemu — kryptografia SSH to nie
+  miejsce na własne implementacje). FTP jest napisany od zera, bez zależności — to stary,
+  czysto tekstowy protokół, więc da się to zrobić poprawnie samemu. Oba dzielą ten sam wzorzec
+  magazynu profili (`core_data/ssh_hosts.json`, `core_data/ftp_hosts.json`) co reszta programu.
 
 ### Jakość kodu i testy
 
-Cały program to ok. 13 200 linii Go w jednej bazie kodu. Automatyczny pakiet testów (`go test`)
-obejmuje 91 testów w 7 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
+Cały program to ok. 15 000 linii Go w jednej bazie kodu. Automatyczny pakiet testów (`go test`)
+obejmuje 103 testy w 12 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
 językach systemowych), kalkulator podsieci, system aktualizacji (na atrapie API GitHuba: wybór
 pliku per platforma/architektura, weryfikacja SHA-256, odrzucanie podmienionych plików, podmiana
-z wycofaniem), system komunikatów od twórcy, oraz weryfikację układu struktur Win32 API (RAS,
-Menedżer Poświadczeń) na poziomie bajtów. `go vet` przechodzi czysto na wszystkich 8 kombinacjach
+z wycofaniem), system komunikatów od twórcy, weryfikację układu struktur Win32 API (RAS,
+Menedżer Poświadczeń) na poziomie bajtów, oraz klienta SSH/SFTP/FTP — uruchamiane są **prawdziwe,
+lokalne serwery SSH i FTP** (nie atrapy wywołań) w ramach testów, żeby zweryfikować faktyczny
+protokół na drucie, nie tylko logikę. `go vet` przechodzi czysto na wszystkich 8 kombinacjach
 system/architektura przy każdym wydaniu (wymusza to `build.ps1`).
 
 ## 7. Znane ograniczenia
@@ -251,6 +273,17 @@ Poniższe punkty są świadomie i w pełni ujawnione — żadne z nich nie jest 
    dużo gorszy efekt: Google Chrome (Safe Browsing) blokował pobieranie pliku jako "wirus" —
    patrz CHANGELOG.md. Jedyny trwały sposób pozbycia się tych ostrzeżeń to podpis cyfrowy, nie
    wdrożony w tej wersji.
+7. **Windows: strzałki i klawisze funkcyjne (F1-F12, Page Up/Down, Home/End) nie działają w
+   interaktywnej sesji SSH.** Windows dostarcza te klawisze do konsoli jako kody wirtualne, nie
+   jako sekwencje ANSI — warstwa odczytu klawiatury tego programu (zbudowana pierwotnie do
+   prostej edycji linii) je pomija. Zwykłe pisanie, Enter, Backspace i Ctrl+C (przekazywane do
+   zdalnego procesu) działają normalnie, tak samo na Linuksie/macOS, gdzie te klawisze w ogóle
+   nie sprawiają problemu (surowy strumień bajtów naturalnie przenosi sekwencje ANSI). Pełna
+   naprawa na Windows wymagałaby osobnej warstwy parsowania VT, co wykracza poza rozsądny zakres
+   tej funkcji — świadomie przyjęte ograniczenie.
+8. **Zwykłe FTP jest protokołem bez szyfrowania** — hasło i transferowane pliki idą jawnym
+   tekstem przez sieć. To ograniczenie samego protokołu (RFC 959 z 1985 r.), nie tego programu.
+   Jeśli to możliwe, używaj SFTP zamiast FTP.
 
 ## 8. FAQ
 
@@ -279,6 +312,10 @@ Bo plik nie jest podpisany cyfrowo (patrz punkt 6 w §7) — to standardowe zach
 każdego niepodpisanego programu, niezależnie od tego, co kod faktycznie robi. Jedyny sposób,
 żeby to ostrzeżenie zniknęło na dobre, to podpis cyfrowy (certyfikat Authenticode) — nie
 wdrożony w tej wersji (patrz CHANGELOG.md).
+
+**Znalazłeś błąd albo masz sugestię poprawki?**
+Napisz na **pxware@pxware.pl** — opisz, co się stało, i zaznacz w temacie, że chodzi o
+NetworkMaster (ten sam adres obsługuje więcej niż jeden projekt).
 
 ---
 

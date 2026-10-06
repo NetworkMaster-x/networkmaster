@@ -1,5 +1,49 @@
 # Lista zmian
 
+## 2.5.0
+
+### Nowości
+- **Klient SSH/SFTP/FTP** — nowa pozycja menu `SSH` (sesja interaktywna z pełnym zdalnym
+  terminalem, wykonanie pojedynczej komendy, przeglądarka plików SFTP) i `FTP` (przeglądarka
+  plików). Zapisane profile hostów (`core_data/ssh_hosts.json`, `ftp_hosts.json`) — jawne
+  hasła, ten sam wzorzec co profile VPN, z tym samym ostrzeżeniem w menu.
+- SSH obsługuje logowanie hasłem i/lub kluczem prywatnym (opcjonalnie zaszyfrowanym), oraz
+  weryfikację klucza hosta metodą TOFU ("zaufaj przy pierwszym połączeniu", jak `known_hosts`
+  w OpenSSH, `core_data/ssh_known_hosts.json`) — zmiana klucza przy kolejnym połączeniu jest
+  sygnalizowana wprost jako możliwy atak man-in-the-middle, nie cicho akceptowana.
+
+### Zależności (zmiana istotna dla kogoś budującego ze źródeł)
+- Program ma teraz **trzy zależności Go**: `golang.org/x/crypto` (SSH), `golang.org/x/term`
+  (rozmiar terminala), `github.com/pkg/sftp` (SFTP) — przypięte do wersji kompatybilnych z
+  Go 1.22 (`x/crypto` v0.33.0, `x/term` v0.29.0, `pkg/sftp` v1.13.9), żeby nie podnosić
+  minimalnej wymaganej wersji Go mimo że najnowsze wydania tych pakietów wymagają już Go 1.26.
+  Wynikowy plik jest nadal w pełni samodzielny – moduły są wkompilowane statycznie, zero
+  zależności uruchomieniowych. FTP jest napisany od zera bez żadnej zależności (prosty,
+  tekstowy protokół – w przeciwieństwie do SSH da się to zrobić bezpiecznie samemu).
+
+### Poprawki błędów
+- **Znaleziony i naprawiony w trakcie pisania testów integracyjnych:** klient FTP wieszał
+  program **na zawsze** przy połączeniu z prawdziwym serwerem — polecenie `TYPE I` nie było
+  owinięte w `StartResponse`/`EndResponse` z `net/textproto`, co psuło wewnętrzną kolejkę
+  (`Pipeline`) i blokowało każde kolejne polecenie w nieskończoność. Wykryte dzięki testom
+  uruchamiającym **prawdziwy serwer FTP** (nie atrapę wywołań) — bez tego błąd ujawniłby się
+  dopiero u pierwszego użytkownika łączącego się z prawdziwym serwerem.
+
+### Znane ograniczenia
+- **Windows: strzałki i klawisze funkcyjne nie działają w interaktywnej sesji SSH** — Windows
+  dostarcza je do konsoli jako kody wirtualne, nie sekwencje ANSI, a istniejąca warstwa
+  klawiatury (budowana pierwotnie do prostej edycji linii) je pomija. Zwykłe pisanie, Enter,
+  Backspace i Ctrl+C (przekazywane do zdalnego procesu) działają wszędzie, tak samo na
+  Linuksie/macOS, gdzie ten problem w ogóle nie występuje (surowy strumień bajtów naturalnie
+  przenosi sekwencje ANSI). Świadomie przyjęte ograniczenie – pełna naprawa wymagałaby osobnej
+  warstwy parsowania VT na Windows.
+- Zwykłe FTP jest nieszyfrowane (ograniczenie samego protokołu z 1985 r., nie tego programu)
+  — używaj SFTP, gdzie to możliwe.
+- SSH/SFTP/FTP zostały przetestowane na Windows przez prawdziwe, lokalne serwery testowe
+  (patrz `ssh_server_test.go`, `ftp_server_test.go`) — jak zawsze w tym projekcie, kod dla
+  Linuksa/macOS kompiluje się i przechodzi `go vet`, ale nie był uruchomiony na żywym
+  systemie innym niż Windows.
+
 ## 2.4.1
 
 ### Poprawki błędów
