@@ -3,6 +3,20 @@
 ## 2.5.2
 
 ### Poprawki błędów
+- **Cichy brak zapisu danych (ustawienia, log, historia komunikatów, bazy IP/WOL), gdy
+  `core_data/` został wcześniej utworzony jako root (`sudo`).** Wykryte przez realny test na
+  żywym serwerze Ubuntu: program działał normalnie, ale `networkmaster.log` nie przyrastał
+  mimo wielu uruchomień jako zwykły użytkownik. Przyczyna: mechanizm "program jest przenośny,
+  a jeśli jego katalog jest tylko do odczytu, zapisuj dane w katalogu konfiguracji
+  użytkownika" sprawdzał zapisywalność tylko samego katalogu programu (`BaseDir`), nie
+  podfolderów danych `core_data/`/`Reports/` — które mogły już istnieć z innymi uprawnieniami
+  po wcześniejszym uruchomieniu jako root, pozostając niezapisywalne dla zwykłego konta mimo
+  że sam katalog programu był w porządku. Dotyczyło to Linuksa/macOS (typowy efekt
+  `sudo ./NetworkMaster...` przy pierwszym uruchomieniu — np. do testu funkcji wymagających
+  uprawnień), nie Windows. Naprawione: `dataDirsWritable()` sprawdza teraz zapisywalność
+  `core_data/` i `Reports/` bezpośrednio, a nie tylko katalogu bazowego — fallback do katalogu
+  konfiguracji użytkownika uruchamia się poprawnie, z czytelnym komunikatem na starcie
+  programu. Zweryfikowane na żywo na serwerze Ubuntu po poprawce.
 - **"Otwórz w eksploratorze systemu" dla `ftp://` na Windows otwierało przeglądarkę Edge
   (bez obsługi FTP) zamiast Eksploratora plików** — wykryte natychmiast przez użytkownika
   po wydaniu 2.5.1, z zrzutem ekranu pokazującym propozycję pobrania obcej aplikacji ze

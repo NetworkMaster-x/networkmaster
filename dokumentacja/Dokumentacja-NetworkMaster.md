@@ -1,14 +1,16 @@
 # NetworkMaster — dokumentacja programu
 
-**Wersja:** 2.4.x — dokładny numer i pełna historia zmian: [`CHANGELOG.md`](../CHANGELOG.md)
+**Wersja:** 2.5.x — dokładny numer i pełna historia zmian: [`CHANGELOG.md`](../CHANGELOG.md)
 **Rodzaj:** terminalowe narzędzie do diagnostyki i zarządzania siecią lokalną
 **Platformy:** Windows, Linux, macOS (amd64, arm64; Windows i Linux dodatkowo 386/32-bit)
-**Model dystrybucji:** pojedynczy plik wykonywalny, bez instalatora, bez zależności zewnętrznych, portable (dane zapisywane obok pliku programu)
+**Model dystrybucji:** pojedynczy plik wykonywalny, bez instalatora, portable (dane zapisywane obok pliku programu). Zero zależności uruchomieniowych — jedyne trzy zależności to biblioteki Go wkompilowane statycznie na etapie budowania (SSH/SFTP, patrz §5).
 **Status prawny:** oprogramowanie zamknięte, wszelkie prawa zastrzeżone — patrz [`../LICENSE.md`](../LICENSE.md) i [`Regulamin.md`](Regulamin.md)
 
 Ten dokument opisuje program taki, jaki jest — funkcje, sposób działania, architekturę kodu i
-znane ograniczenia — z myślą zarówno o użytkowniku końcowym, jak i o kimś oceniającym produkt
-technicznie (np. przed zakupem).
+znane ograniczenia — z myślą głównie o użytkowniku końcowym. Kto ocenia projekt technicznie
+(np. przed zakupem) i chce dużo głębszego spojrzenia — opis każdego modułu, model danych,
+proces wydawniczy, dług techniczny — znajdzie je w osobnym dokumencie:
+[`Dokumentacja-Techniczna-NetworkMaster.md`](Dokumentacja-Techniczna-NetworkMaster.md).
 
 ---
 
@@ -231,7 +233,7 @@ a nie osobnymi gałęziami kodu.
 ### Jakość kodu i testy
 
 Cały program to ok. 15 000 linii Go w jednej bazie kodu. Automatyczny pakiet testów (`go test`)
-obejmuje 104 testy w 12 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
+obejmuje 108 testów w 13 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
 językach systemowych), kalkulator podsieci, system aktualizacji (na atrapie API GitHuba: wybór
 pliku per platforma/architektura, weryfikacja SHA-256, odrzucanie podmienionych plików, podmiana
 z wycofaniem), system komunikatów od twórcy, weryfikację układu struktur Win32 API (RAS,
@@ -244,11 +246,22 @@ system/architektura przy każdym wydaniu (wymusza to `build.ps1`).
 
 Poniższe punkty są świadomie i w pełni ujawnione — żadne z nich nie jest ukryte ani pomniejszone:
 
-1. **Linux i macOS nie były uruchomione na żywym systemie.** Cały kod dla tych platform
-   kompiluje się i przechodzi statyczną analizę (`go vet`) na wszystkich architekturach, ale był
-   tworzony i weryfikowany wyłącznie na Windows — autor nie miał dostępu do maszyny z Linuksem
-   ani macOS do testów na żywo. Zanim uruchomisz program produkcyjnie na tych systemach,
-   przetestuj podstawowe funkcje.
+1. **macOS nie był uruchomiony na żywym systemie.** Kod dla macOS kompiluje się i przechodzi
+   statyczną analizę (`go vet`), ale był tworzony i weryfikowany wyłącznie na Windows/Linux —
+   autor nie miał dostępu do maszyny z macOS do testów na żywo. Zanim uruchomisz program
+   produkcyjnie na macOS, przetestuj podstawowe funkcje.
+
+   **Linux natomiast był zweryfikowany na żywym serwerze (Ubuntu 26.04 LTS):** uruchomienie,
+   przełączniki `--version`/`--check-update`, pierwsze uruchomienie i ekran zgody, komunikaty od
+   twórcy, menu główne, IPConfig, tabela ARP (z lookupem producenta MAC, przez fallback na
+   `ip neigh`, bo `arp` nie był nawet zainstalowany na tym hoście), kalkulator podsieci i
+   menedżer VPN — w tym poprawne, czytelne zgłoszenie braku `nmcli`/NetworkManager, zamiast
+   cichej awarii. Właśnie na tym teście znaleziono i naprawiono realny błąd: ciche pomijanie
+   zapisu danych, gdy `core_data/` był wcześniej utworzony jako root — patrz CHANGELOG.md
+   (wersja 2.5.2). Nie zweryfikowano na żywo: rzeczywistego połączenia VPN (WireGuard/OpenVPN
+   wymaga drugiego końca tunelu), monitora WiFi (serwer testowy nie ma karty WiFi) i edytora
+   pliku hosts/operacji wymagających uprawnień roota (konto testowe miało `sudo`, ale testy
+   uruchamiano bez niego, żeby sprawdzić typowy, nieprzywilejowany przypadek).
 2. **macOS: brak programowego tworzenia/edycji/usuwania profili VPN.** To ograniczenie samego
    systemu Apple (wymaga podpisanej aplikacji z uprawnieniem `NEVPNManager`), nie luka w kodzie.
    Dodatkowo `scutil` (narzędzie systemowe, na którym opiera się ta funkcja) w ogóle nie pokazuje
