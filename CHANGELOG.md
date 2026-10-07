@@ -1,5 +1,19 @@
 # Lista zmian
 
+## 2.5.2
+
+### Poprawki błędów
+- **"Otwórz w eksploratorze systemu" dla `ftp://` na Windows otwierało przeglądarkę Edge
+  (bez obsługi FTP) zamiast Eksploratora plików** — wykryte natychmiast przez użytkownika
+  po wydaniu 2.5.1, z zrzutem ekranu pokazującym propozycję pobrania obcej aplikacji ze
+  sklepu zamiast natywnego widoku FTP. Przyczyna: generyczne `cmd /c start` trafia na
+  nowszych Windows do domyślnej przeglądarki, a nie do Eksploratora. Naprawione przez
+  bezpośrednie wywołanie `explorer.exe <adres>` dla `ftp://` — zweryfikowane na żywo
+  (zrzut ekranu): otwiera natywny widok folderu FTP w Eksploratorze, z własnym,
+  czytelnym komunikatem błędu Eksploratora, jeśli serwer odrzuci połączenie. `sftp://`
+  bez zmian (generyczny mechanizm skojarzeń protokołów – Eksplorator nie ma wbudowanej
+  obsługi SFTP).
+
 ## 2.5.1
 
 ### Nowości
