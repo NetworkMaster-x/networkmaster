@@ -1,5 +1,19 @@
 # Lista zmian
 
+## 2.5.1
+
+### Nowości
+- **Przeglądarki SFTP i FTP mają teraz opcję `[O] Otwórz w eksploratorze systemu`** —
+  wysyła bieżący katalog jako adres `sftp://`/`ftp://` do systemowego mechanizmu skojarzeń
+  protokołów (Finder na macOS, GVFS/KIO przez `xdg-open` na Linuksie, cokolwiek zarejestrowane
+  na Windows). Na Windows natywnie działa to tylko dla `ftp://` (File Explorer) — `sftp://`
+  wymaga zainstalowanego zewnętrznego klienta (np. WinSCP), bo Windows nie ma wbudowanej
+  obsługi tego protokołu.
+- **Ostrzeżenie:** jeśli profil ma zapisane hasło, trafia ono jawnie do tego adresu URL —
+  czyli chwilowo do listy argumentów uruchamianego procesu, widocznej innym
+  procesom/użytkownikom tej maszyny (np. w Menedżerze Zadań). To dodatkowe ryzyko ponad samo
+  przechowywanie w pliku; program sygnalizuje to przed otwarciem.
+
 ## 2.5.0
 
 ### Nowości

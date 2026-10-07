@@ -110,6 +110,16 @@ serwera i prosi o potwierdzenie (TOFU — "zaufaj przy pierwszym połączeniu", 
 mechanizm co `known_hosts` w OpenSSH) — zmiana klucza przy kolejnym połączeniu jest
 sygnalizowana wprost jako możliwy atak, nie cicho ignorowana.
 
+W przeglądarkach plików SFTP i FTP dostępna jest opcja **[O] Otwórz w eksploratorze
+systemu** — wysyła bieżący katalog jako adres `sftp://`/`ftp://` do systemowego mechanizmu
+skojarzeń protokołów (Finder na macOS, GVFS/KIO przez `xdg-open` na Linuksie, cokolwiek
+zarejestrowane na Windows — na Windows natywnie działa to tylko dla `ftp://`; dla `sftp://`
+wymaga zainstalowanego zewnętrznego klienta, np. WinSCP). **Ostrzeżenie:** jeśli profil ma
+zapisane hasło, trafia ono jawnie do tego adresu, czyli chwilowo do listy argumentów
+uruchamianego procesu — widocznej innym procesom/użytkownikom tej maszyny (np. w
+Menedżerze Zadań) — to dodatkowe ryzyko ponad samo przechowywanie w pliku, program
+sygnalizuje to przed otwarciem.
+
 ### Pozostałe
 | Skrót | Funkcja |
 |---|---|
@@ -221,7 +231,7 @@ a nie osobnymi gałęziami kodu.
 ### Jakość kodu i testy
 
 Cały program to ok. 15 000 linii Go w jednej bazie kodu. Automatyczny pakiet testów (`go test`)
-obejmuje 103 testy w 12 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
+obejmuje 104 testy w 12 plikach — parsery (dane z `arp`, `ip neigh`, `ss`, `netsh`, `ping` w wielu
 językach systemowych), kalkulator podsieci, system aktualizacji (na atrapie API GitHuba: wybór
 pliku per platforma/architektura, weryfikacja SHA-256, odrzucanie podmienionych plików, podmiana
 z wycofaniem), system komunikatów od twórcy, weryfikację układu struktur Win32 API (RAS,
